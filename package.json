@@ -4,7 +4,7 @@
   "description": "Cross-project node standards at HMPO",
   "main": "index.js",
   "scripts": {
-    "postinstall": "./bin/install"
+    "preinstall": "./bin/install"
   },
   "bin": {
     "hmpo-checkgit": "./bin/checkgit",
