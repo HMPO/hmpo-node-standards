@@ -1,0 +1,33 @@
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Coverage
+lib-cov
+coverage
+
+# Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
+.grunt
+
+# Compiled binary addons (http://nodejs.org/api/addons.html)
+build/Release
+
+# IDE files and folders
+.idea/
+*.iml
+*~
+*.sublime-project
+*.sublime-workspace
+
+# npm
+node_modules
+npm-debug.log
+
+# Misc
+dump.rdb
+.vagrant

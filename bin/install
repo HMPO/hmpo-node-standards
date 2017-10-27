@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+function copyfiles {
+  local src
+  local dest
+  for src in "$1/"{,.??}*; do
+    dest="$2/$(basename "$src")"
+    (test -f "$src" && ! test -f "$dest") && {
+      echo - Installing $src to $dest
+      cp "$src" "$dest"
+    }
+  done
+}
+
+THIS="$(readlink -f "$(dirname "$0")/..")"
+DEST="${THIS%%/node_modules/*}"
+
+test "$DEST" == "$THIS" && echo Local && exit
+
+copyfiles "$THIS/files" "$DEST"
+mkdir -p "$DEST/test"
+copyfiles "$THIS/files/test" "$DEST/test"
+
+./bin/update-package "$DEST/package.json"

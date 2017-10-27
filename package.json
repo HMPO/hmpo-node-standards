@@ -1,0 +1,28 @@
+{
+  "name": "hmpo-node-standards",
+  "version": "0.0.1",
+  "description": "Cross-project node standards at HMPO",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "./bin/install"
+  },
+  "bin": {
+    "hmpo-checkgit": "./bin/checkgit",
+    "hmpo-commitmsg": "./bin/commitmsg"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UKHomeOffice/passports-node-standards.git"
+  },
+  "keywords": [
+    "hmpo",
+    "node",
+    "standards"
+  ],
+  "author": "HMPO",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/UKHomeOffice/passports-node-standards/issues"
+  },
+  "homepage": "https://github.com/UKHomeOffice/passports-node-standards#readme"
+}

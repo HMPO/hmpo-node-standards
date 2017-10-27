@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+git status --porcelain | (! grep .) || {
+	echo 'ERROR: Uncommited changes!'
+	exit 1
+}
