@@ -17,7 +17,6 @@ const optionalScripts = {
   'test:coverage': "istanbul check-coverage",
 };
 
-
 const fs = require('fs');
 
 const filename = process.argv[2];
