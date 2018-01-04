@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CHECKED="$1"
-ALLOWED="${2:-.}"
+ALLOWED="$2"
 
 if test -z "$CHECKED"; then
 	test -d ./views && CHECKED="$CHECKED views/"
@@ -12,7 +12,7 @@ if test -z "$CHECKED"; then
 	exit 0
 fi
 
-if grep "'" -r $CHECKED | grep -v $ALLOWED; then
+if grep "'" -r $CHECKED | ( ( test -z "$ALLOWED" && grep . ) || grep -v $ALLOWED ); then
 	echo 'ERROR: Incorrect apostrophes!'
 	exit 1
 fi
