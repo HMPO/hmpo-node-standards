@@ -1,6 +1,7 @@
 env:
   node: true
   mocha: true
+  es6: true
 globals:
   sinon: true
   expect: true
