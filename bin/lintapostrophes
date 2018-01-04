@@ -4,15 +4,15 @@ CHECKED="$1"
 ALLOWED="$2"
 
 if test -z "$CHECKED"; then
-	test -d ./views && CHECKED="$CHECKED 'views/'"
-	test -d ./locales && CHECKED="$CHECKED 'locales/'"
+	test -d ./views && CHECKED="$CHECKED views/"
+	test -d ./locales && CHECKED="$CHECKED locales/"
 fi
 
 if test -z "$CHECKED"; then
 	exit 0
 fi
 
-if grep "'" -r $CHECKED | ( ( test -z "$ALLOWED" && cat ) || grep -v $ALLOWED ) then
+if ! ( grep "'" -r $CHECKED | ( ( test -z "$ALLOWED" && cat ) || grep -v $ALLOWED ) ); then
 	echo 'ERROR: Incorrect apostrophes!'
 	exit 1
 fi
