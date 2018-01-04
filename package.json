@@ -7,6 +7,7 @@
     "preinstall": "./bin/install"
   },
   "bin": {
+    "hmpo-lintapostrophes": "./bin/lintapostrophes",
     "hmpo-checkgit": "./bin/checkgit",
     "hmpo-commitmsg": "./bin/commitmsg"
   },

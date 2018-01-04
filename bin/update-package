@@ -2,17 +2,21 @@
 
 'use strict';
 
-const scripts = {
+const overwriteScripts = {
   'start': 'node app.js',
-  'pretest': 'npm run test:lint',
-  'test': 'npm run test:unit',
-  'posttest': 'npm run test:coverage',
-  'test:lint': 'eslint .',
-  'test:unit': 'istanbul cover _mocha -- ./test/unit --recursive --require ./test/unit/helper',
-  'test:coverage': "istanbul check-coverage",
   'commitmsg': 'hmpo-commitmsg',
   'prepush': 'hmpo-checkgit && npm test'
 };
+
+const optionalScripts = {
+  'pretest': 'npm run test:lint',
+  'test': 'npm run test:unit',
+  'posttest': 'npm run test:coverage',
+  'test:lint': 'eslint . && hmpo-lintapostrophes',
+  'test:unit': 'istanbul cover _mocha -- ./test/unit --recursive --require ./test/unit/helper',
+  'test:coverage': "istanbul check-coverage",
+};
+
 
 const fs = require('fs');
 
@@ -20,11 +24,16 @@ const filename = process.argv[2];
 const pkg = JSON.parse(fs.readFileSync(filename, 'utf8'));
 
 let changed, name;
-for (name in scripts) {
+for (name in overwriteScripts) {
+  pkg.scripts[name] = overwriteScripts[name];
+  changed = true;
+  console.log(name + ' script set to ' + pkg.scripts[name] + ' in ' + filename);
+}
+for (name in optionalScripts) {
   if (!pkg.scripts[name]) {
-	pkg.scripts[name] = scripts[name];
-	changed = true;
-    console.log(name + ' script added to ' + filename);
+    pkg.scripts[name] = optionalScripts[name];
+    changed = true;
+    console.log(name + ' script set to ' + pkg.scripts[name] + ' in ' + filename);
   }
 }
 if (changed) {

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+CHECKED="${1:-'views/' 'locales/'}"
+ALLOWED="$2"
+
+( grep "'" -r $CHECKED | ( ( test -z "$ALLOWED" && cat ) || grep -v $ALLOWED ) ) && (
+	echo 'ERROR: Incorrect apostrophes!'
+	exit 1
+)
+
