@@ -2,20 +2,52 @@
 
 'use strict';
 
-const overwriteScripts = {
-  'start': 'node app.js',
-  'commitmsg': 'hmpo-commitmsg',
-  'prepush': 'hmpo-checkgit && npm test'
-};
-
-const optionalScripts = {
-  'pretest': 'npm run test:lint',
-  'test': 'npm run test:unit',
-  'posttest': 'npm run test:coverage',
-  'test:lint': 'eslint . && hmpo-lintapostrophes',
-  'test:unit': 'istanbul cover _mocha -- ./test/unit --recursive --require ./test/unit/helper',
-  'test:coverage': "istanbul check-coverage",
-};
+const scripts = [
+  { name: 'start',
+    force: true,
+    script: 'node app.js'
+  },
+  { name: 'commitmsg',
+    force: true,
+    script: 'hmpo-commitmsg'
+  },
+  { name: 'prepush',
+    force: true,
+    script: 'hmpo-checkgit && npm test'
+  },
+  { name: 'pretest',
+    script: 'npm run test:lint'
+  },
+  { name: 'test',
+    deps: ['mocha'],
+    script: 'npm run test:unit'
+  },
+  { name: 'test',
+    script: 'true'
+  },
+  { name: 'posttest',
+    deps: ['istanbul'],
+    script: 'npm run test:coverage'
+  },
+  { name: 'test:lint',
+    deps: ['eslint'],
+    script: 'eslint . && hmpo-lintapostrophes'
+  },
+  { name: 'test:lint',
+    script: 'hmpo-lintapostrophes'
+  },
+  { name: 'test:unit',
+    deps: ['istanbul', 'mocha'],
+    script: 'istanbul cover _mocha -- ./test/unit --recursive --require ./test/unit/helper'
+  },
+  { name: 'test:unit',
+    deps: ['mocha'], script: 'mocha ./test/unit --recursive --require ./test/unit/helper'
+  },
+  { name: 'test:coverage',
+    deps: ['istanbul'],
+    script: "istanbul check-coverage"
+  }
+];
 
 const fs = require('fs');
 
@@ -23,20 +55,27 @@ const filename = process.argv[2];
 const pkg = JSON.parse(fs.readFileSync(filename, 'utf8'));
 
 let changed, name;
-for (name in overwriteScripts) {
-  pkg.scripts[name] = overwriteScripts[name];
-  changed = true;
-  console.log(name + ' script set to ' + pkg.scripts[name] + ' in ' + filename);
-}
-for (name in optionalScripts) {
-  if (!pkg.scripts[name]) {
-    pkg.scripts[name] = optionalScripts[name];
-    changed = true;
-    console.log(name + ' script set to ' + pkg.scripts[name] + ' in ' + filename);
+
+scripts.forEach(item => {
+  // check if it exists
+  if (!item.force && pkg.scripts[item.name]) return;
+  // check if different
+  if (pkg.scripts[item.name] === item.script) return;
+  // check deps
+  if (item.deps) {
+    let dep;
+    for (dep of item.deps) {
+      if (!pkg.dependencies[dep] && !pkg.devDependencies[dep]) return;
+    }
   }
-}
+  // add script
+  pkg.scripts[item.name] = item.script;
+  changed = true;
+  console.log(item.name + ' script set to ' + pkg.scripts[item.name] + ' in ' + filename);
+});
+
 if (changed) {
-  const pkgStr = JSON.stringify(pkg, null, 2);
+  const pkgStr = JSON.stringify(pkg, null, 2) + '\n';
   fs.writeFileSync(filename, pkgStr, 'utf8');
   console.log(filename + ' updated');
 }
