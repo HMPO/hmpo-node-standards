@@ -12,10 +12,15 @@ function copyfiles {
   done
 }
 
-THIS="$(readlink -f "$(dirname "$0")/..")"
+#THIS="$(readlink -f "$(dirname "$0")/..")"
+THIS="$(node -e 'process.stdout.write(require("path").resolve(process.argv[1], "..", ".."))' "$0")"
 DEST="${THIS%%/node_modules/*}"
 
+echo THIS "$THIS"
+echo DEST "$DEST"
+
 test "$DEST" == "$THIS" && echo Local && exit
+exit;
 
 copyfiles "$THIS/files" "$DEST"
 mkdir -p "$DEST/test"
