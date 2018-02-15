@@ -20,7 +20,6 @@ echo THIS "$THIS"
 echo DEST "$DEST"
 
 test "$DEST" == "$THIS" && echo Local && exit
-exit;
 
 copyfiles "$THIS/files" "$DEST"
 mkdir -p "$DEST/test"
