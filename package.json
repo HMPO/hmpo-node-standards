@@ -9,7 +9,8 @@
   "bin": {
     "hmpo-lintapostrophes": "./bin/lintapostrophes",
     "hmpo-checkgit": "./bin/checkgit",
-    "hmpo-commitmsg": "./bin/commitmsg"
+    "hmpo-commitmsg": "./bin/commitmsg",
+    "hmpo-checkengines": "./bin/checkengines"
   },
   "repository": {
     "type": "git",

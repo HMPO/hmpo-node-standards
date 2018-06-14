@@ -16,10 +16,9 @@ function copyfiles {
 THIS="$(node -e 'process.stdout.write(require("path").resolve(process.argv[1], "..", ".."))' "$0")"
 DEST="${THIS%%/node_modules/*}"
 
-echo THIS "$THIS"
-echo DEST "$DEST"
-
 test "$DEST" == "$THIS" && echo Local && exit
+
+./bin/check-engine "$DEST/package.json"
 
 copyfiles "$THIS/files" "$DEST"
 mkdir -p "$DEST/test"

@@ -3,6 +3,9 @@
 'use strict';
 
 const scripts = [
+  { name: 'preinstall',
+    script: 'hmpo-checkengines'
+  },
   { name: 'start',
     force: true,
     script: 'node app.js'

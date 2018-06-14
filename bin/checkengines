@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const fs = require('fs');
+const compare = require('./semver');
+
+const filename = process.argv[2];
+const pkg = JSON.parse(fs.readFileSync(filename, 'utf8'));
+
+if (!pkg || !pkg.engines) return process.exit(0);
+
+if (pkg.engines.node) {
+  const nodeVersion = process.versions.node.trim();
+
+  if (!compare(nodeVersion, pkg.engines.node)) {
+    console.error('Node version is incorrect:\n Node version: ' + nodeVersion + '\n Should be: ' + pkg.engines.node);
+    return process.exit(-1);
+  }
+}
+
+if (pkg.engines.npm) {
+  const npmVersion = require('child_process').execSync('npm -v').toString().trim();
+
+  if (!compare(npmVersion, pkg.engines.npm)) {
+    console.error('NPM version is incorrect:\n NPM version: ' + npmVersion + '\n Should be: ' + pkg.engines.npm);
+    return process.exit(-1);
+  }
+}
