@@ -18,7 +18,7 @@ DEST="${THIS%%/node_modules/*}"
 
 test "$DEST" == "$THIS" && echo Local && exit
 
-./bin/check-engine "$DEST/package.json"
+./bin/checkengines "$DEST/package.json"
 
 copyfiles "$THIS/files" "$DEST"
 mkdir -p "$DEST/test"
