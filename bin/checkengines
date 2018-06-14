@@ -12,8 +12,13 @@ if (!pkg || !pkg.engines) return process.exit(0);
 
 const strict = pkg.engineStrict;
 
+console.log('PATH=' + process.env.PATH);
+console.log('path:', require('child_process').execSync('echo $PATH').toString());
+console.log('node:', require('child_process').execSync('which node').toString());
+console.log('npm:', require('child_process').execSync('which npm').toString());
+
 if (pkg.engines.node) {
-  const nodeVersion = require('child_process').execSync('node -v', { env: process.env }).toString().trim().replace(/^v/i,'');
+  const nodeVersion = require('child_process').execSync('node -v').toString().trim().replace(/^v/i,'');
 
   if (!compare(nodeVersion, pkg.engines.node)) {
     console.error('Node version is incorrect:\n Node version: ' + nodeVersion + '\n Should be: ' + pkg.engines.node);
@@ -22,7 +27,7 @@ if (pkg.engines.node) {
 }
 
 if (pkg.engines.npm) {
-  const npmVersion = require('child_process').execSync('npm -v', { env: process.env }).toString().trim();
+  const npmVersion = require('child_process').execSync('npm -v').toString().trim();
 
   if (!compare(npmVersion, pkg.engines.npm)) {
     console.error('NPM version is incorrect:\n NPM version: ' + npmVersion + '\n Should be: ' + pkg.engines.npm);
