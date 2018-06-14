@@ -1,0 +1,81 @@
+#!/usr/bin/env node
+
+'use strict';
+
+function versionSplit(version) {
+  version = version.trim().split('.');
+  return {
+    major: parseInt(version[0], 10),
+    minor: parseInt(version[1], 10),
+    patch: parseInt(version[2], 10)
+  };
+}
+
+function comparePart(version, target) {
+  return (target !== target) ? 0 : version - target;
+}
+
+function compareVersion(version, target) {
+  return (
+    comparePart(version.major, target.major) ||
+    comparePart(version.minor, target.minor) ||
+    comparePart(version.patch, target.patch)
+  );
+}
+
+function compareVersionOperator(version, target, op) {
+  let result = compareVersion(version, target);
+  switch (op) {
+    case '>': return result > 0;
+    case '<': return result < 0;
+    case '>=': return result >= 0;
+    case '<=': return result <= 0;
+  }
+  return result == 0;
+}
+
+function decodeTarget(version, target) {
+  target = target.trim().split('&&');
+  if (target.length > 1) {
+    for (let t of target) if (!decodeTarget(version, t)) return false
+    return true;
+  }
+  target = target[0].split('||');
+  if (target.length > 1) {
+    for (let t of target) if (decodeTarget(version, t)) return true
+    return false;
+  }
+  target = target[0].trim();
+
+  target = /^(>=|=|~|\^|<=|>|<)?([0-9.]+)$/.exec(target.trim());
+  let op = target[1] || '=';
+  target = target[2];
+  let splitTarget = versionSplit(target);
+
+  if (op === '~') {
+    let limit = splitTarget.major + '.' + (splitTarget.minor + 1) + '.0';
+    return decodeTarget(version, '>=' + target + ' && ' + '<' + limit);
+  }
+
+  if (op === '^') {
+    let limit = splitTarget.major ?
+      ((splitTarget.major + 1) + '.0.0') :
+      '0.' + (splitTarget.minor + 1) + '.0';
+    return decodeTarget(version, '>=' + target + ' && ' + '<' + limit);
+  }
+
+  return compareVersionOperator(version, splitTarget, op);
+}
+
+function compare(version, target) {
+  version = versionSplit(version);
+  return decodeTarget(version, target);
+}
+
+if (require.main === module) {
+  if (!compare(process.argv[2], process.argv[3])) {
+    process.exit(-1);
+  }
+}
+
+module.exports = compare;
