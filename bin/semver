@@ -35,15 +35,15 @@ function compareVersionOperator(version, target, op) {
 }
 
 function decodeTarget(version, target) {
-  target = target.trim().split('&&');
-  if (target.length > 1) {
-    for (let t of target) if (!decodeTarget(version, t)) return false
-    return true;
-  }
-  target = target[0].split('||');
+  target = target.trim().split('||');
   if (target.length > 1) {
     for (let t of target) if (decodeTarget(version, t)) return true
     return false;
+  }
+  target = target[0].trim().split(/\s+/);
+  if (target.length > 1) {
+    for (let t of target) if (!decodeTarget(version, t)) return false
+    return true;
   }
   target = target[0].trim();
 
@@ -54,14 +54,14 @@ function decodeTarget(version, target) {
 
   if (op === '~') {
     let limit = splitTarget.major + '.' + (splitTarget.minor + 1) + '.0';
-    return decodeTarget(version, '>=' + target + ' && ' + '<' + limit);
+    return decodeTarget(version, '>=' + target + ' ' + '<' + limit);
   }
 
   if (op === '^') {
     let limit = splitTarget.major ?
       ((splitTarget.major + 1) + '.0.0') :
       '0.' + (splitTarget.minor + 1) + '.0';
-    return decodeTarget(version, '>=' + target + ' && ' + '<' + limit);
+    return decodeTarget(version, '>=' + target + ' ' + '<' + limit);
   }
 
   return compareVersionOperator(version, splitTarget, op);

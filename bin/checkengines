@@ -10,12 +10,14 @@ const pkg = JSON.parse(fs.readFileSync(filename, 'utf8'));
 
 if (!pkg || !pkg.engines) return process.exit(0);
 
+const strict = pkg.engineStrict;
+
 if (pkg.engines.node) {
-  const nodeVersion = process.versions.node.trim();
+  const nodeVersion = require('child_process').execSync('node -v').toString().trim().replace(/^v/i,'');
 
   if (!compare(nodeVersion, pkg.engines.node)) {
     console.error('Node version is incorrect:\n Node version: ' + nodeVersion + '\n Should be: ' + pkg.engines.node);
-    return process.exit(-1);
+    return process.exit(strict ? -1 : 0);
   }
 }
 
@@ -24,6 +26,6 @@ if (pkg.engines.npm) {
 
   if (!compare(npmVersion, pkg.engines.npm)) {
     console.error('NPM version is incorrect:\n NPM version: ' + npmVersion + '\n Should be: ' + pkg.engines.npm);
-    return process.exit(-1);
+    return process.exit(strict ? -1 : 0);
   }
 }
