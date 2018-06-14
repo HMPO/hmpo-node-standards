@@ -1,6 +1,6 @@
 {
   "name": "hmpo-node-standards",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "Cross-project node standards at HMPO",
   "main": "index.js",
   "scripts": {
