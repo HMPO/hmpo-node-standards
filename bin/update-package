@@ -13,6 +13,7 @@ const scripts = [
   },
   { name: 'prepush',
     force: true,
+    allow: /^hmpo-checkgit .* && npm test$/,
     script: 'hmpo-checkgit && npm test'
   },
   { name: 'pretest',
@@ -41,7 +42,8 @@ const scripts = [
     script: 'istanbul cover _mocha -- ./test/unit --recursive --require ./test/unit/helper'
   },
   { name: 'test:unit',
-    deps: ['mocha'], script: 'mocha ./test/unit --recursive --require ./test/unit/helper'
+    deps: ['mocha'],
+    script: 'mocha ./test/unit --recursive --require ./test/unit/helper'
   },
   { name: 'test:coverage',
     deps: ['istanbul'],
@@ -61,6 +63,8 @@ scripts.forEach(item => {
   if (!item.force && pkg.scripts[item.name]) return;
   // check if different
   if (pkg.scripts[item.name] === item.script) return;
+  // check if matches regular expression
+  if (item.allow && new item.allow.test(pkg.scripts[item.name])) return;
   // check deps
   if (item.deps) {
     let dep;
