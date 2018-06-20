@@ -10,7 +10,12 @@ allow_uncommitted="${2:+yes}"
 
 is_destructive='force|delete|\-f|\+'
 current_branch="$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')"
-push_command="$(ps -ocommand= -p $PPID)"
+
+GPPID="$(ps -oppid= -p $PPID)"
+push_command="$(ps -ocommand= -p $GPPID)"
+
+echo "Current Branch: $current_branch"
+echo "Push Command: $push_command"
 
 if [[ "$push_command" =~ $is_destructive ]] && [[ "$push_command" =~ $protected_branch ]]; then
   die "ERROR: Cannot force push or delete remote $protected_branch branch"
