@@ -7,35 +7,40 @@ die(){
 
 protected_branch="${1:-master}"
 allow_uncommitted="${2:+yes}"
-
+allow_nonforced="${3:+yes}"
 is_destructive='force|delete|\-f|\+'
+
+
+# find current branch
 current_branch="$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')"
-
-GPPID="$(ps -oppid= -p $PPID)"
-push_command="$(ps -ocommand= -p $GPPID)"
-
 echo "Current Branch: $current_branch"
+
+
+# find git command that triggered this check
+push_pid="$PPID"
+while [[ -n "$push_pid" && "$push_pid" -gt 1 ]]; do
+  push_command="$(ps -ocommand= -p $push_pid 2> /dev/null)"
+  [[ "$push_command" =~ (^|/bin/)git\  ]] && break
+  push_command=
+  push_pid="$(ps -oppid= -p $push_pid)"
+done
+[[ -z "$push_command" ]] && die "ERROR: Cannot decode triggering git command"
 echo "Push Command: $push_command"
 
-if [[ "$push_command" =~ $is_destructive ]] && [[ "$push_command" =~ $protected_branch ]]; then
-  die "ERROR: Cannot force push or delete remote $protected_branch branch"
+
+if [[ "$push_command" =~ (/| )$protected_branch ]]; then
+    [[ -z "$allow_nonforced" ]] && die "ERROR: Cannot push or delete remote $protected_branch branch"
+    [[ "$push_command" =~ $is_destructive ]] && die "ERROR: Cannot force push or delete remote $protected_branch branch"
 fi
 
-if [[ "$push_command" =~ $is_destructive ]] && [ "$current_branch" = "$protected_branch" ]; then
-  die "ERROR: Cannot force push or delete local $protected_branch branch"
+if [[ "$current_branch" = "$protected_branch" ]]; then
+    [[ -z "$allow_nonforced" ]] && die "ERROR: Cannot push or delete local $protected_branch branch"
+    [[ "$push_command" =~ $is_destructive ]] && die "ERROR: Cannot force push or delete local $protected_branch branch"
 fi
 
-will_remove_protected_branch=":$protected_branch"
-
-if [[ "$push_command" =~ $will_remove_protected_branch ]]; then
-  die "ERROR: Cannot remove $protected_branch branch"
-fi
+[[ "$push_command" =~ :$protected_branch ]] && die "ERROR: Cannot remove $protected_branch branch"
 
 has_uncommitted_changes="$(git status --porcelain | grep .)"
-
-if [[ -z "$allow_uncommitted" && -n "$has_uncommitted_changes" ]]; then
-  echo "$has_uncommitted_changes"
-  die "ERROR: Cannot push with uncommited changes!"
-fi
+[[ -z "$allow_uncommitted" && -n "$has_uncommitted_changes" ]] && die "ERROR: Cannot push with uncommited changes!"
 
 exit 0
