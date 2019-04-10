@@ -7,15 +7,6 @@ const scripts = [
     force: true,
     script: 'node app.js'
   },
-  { name: 'commitmsg',
-    force: true,
-    script: 'hmpo-commitmsg'
-  },
-  { name: 'prepush',
-    force: true,
-    allow: /^hmpo-checkgit .* && npm test$/,
-    script: 'hmpo-checkgit && npm test'
-  },
   { name: 'pretest',
     script: 'npm run test:lint'
   },
@@ -51,6 +42,18 @@ const scripts = [
   }
 ];
 
+const hooks = [
+  { name: 'commit-msg',
+    force: true,
+    script: 'hmpo-commitmsg'
+  },
+  { name: 'pre-push',
+    force: true,
+    allow: /^hmpo-checkgit .* && npm test$/,
+    script: 'hmpo-checkgit && npm test'
+  }
+];
+
 const fs = require('fs');
 
 const filename = process.argv[2];
@@ -58,25 +61,34 @@ const pkg = JSON.parse(fs.readFileSync(filename, 'utf8'));
 
 let changed, name;
 
-scripts.forEach(item => {
-  // check if it exists
-  if (!item.force && pkg.scripts[item.name]) return;
-  // check if different
-  if (pkg.scripts[item.name] === item.script) return;
-  // check if matches regular expression
-  if (item.allow && new item.allow.test(pkg.scripts[item.name])) return;
-  // check deps
-  if (item.deps) {
-    let dep;
-    for (dep of item.deps) {
-      if (!pkg.dependencies[dep] && !pkg.devDependencies[dep]) return;
+const update = (dst, src) => {
+  let obj = pkg;
+
+  dst.split('.').forEach(part => obj = obj[part] = obj[part] || {});
+
+  src.forEach(item => {
+    // check if it exists
+    if (!item.force && obj[item.name]) return;
+    // check if different
+    if (obj[item.name] === item.script) return;
+    // check if matches regular expression
+    if (item.allow && new item.allow.test(obj[item.name])) return;
+    // check deps
+    if (item.deps) {
+      let dep;
+      for (dep of item.deps) {
+        if (!pkg.dependencies[dep] && !pkg.devDependencies[dep]) return;
+      }
     }
-  }
-  // add script
-  pkg.scripts[item.name] = item.script;
-  changed = true;
-  console.log(item.name + ' script set to ' + pkg.scripts[item.name] + ' in ' + filename);
-});
+    // add item
+    obj[item.name] = item.script;
+    changed = true;
+    console.log(dst + '.' + item.name + ' script set to ' + obj[item.name] + ' in ' + filename);
+  });
+};
+
+update('scripts', scripts);
+update('husky.hooks', hooks);
 
 if (changed) {
   const pkgStr = JSON.stringify(pkg, null, 2) + '\n';
