@@ -72,7 +72,7 @@ const update = (dst, src) => {
     // check if different
     if (obj[item.name] === item.script) return;
     // check if matches regular expression
-    if (item.allow && new item.allow.test(obj[item.name])) return;
+    if (item.allow && item.allow.test(obj[item.name])) return;
     // check deps
     if (item.deps) {
       let dep;
