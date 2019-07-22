@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+j={2:'',3:'EN=locales/en/default.json',4:'CY=locales/cy/default.json'},
+d=[],
+t=s=>typeof s,
+f=(a,b,r)=>{
+    for(k in a)
+        p=r+'.'+(k==+k?+k+1:k),
+        x=a[k],
+        y=b[k],
+        t(x)!=t(y)?
+            d.push(p):
+            t(x)!='string'&&f(x,y,p)
+},
+r=require,
+v=r('path').resolve,
+g=a=>process.argv[a]||j[a],
+l=a=>r(v(process.cwd(),g(a).substr(3))),
+n=a=>g(a).substr(0,2),
+e=l(3),
+c=l(4),
+f(c,e,n(3)),
+f(e,c,n(4)),
+i=g(2).length&&new RegExp(g(2)),
+m=i?d.filter(p=>!i.test(p)):d,
+m.length&&(
+    console.error('Locales missing keys:\n '+m.join('\n ')),
+    process.exit(1)
+)

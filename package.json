@@ -9,6 +9,7 @@
   "bin": {
     "hmpo-lintapostrophes": "./bin/lintapostrophes",
     "hmpo-checkgit": "./bin/checkgit",
+    "hmpo-checklocales": "./bin/checklocales",
     "hmpo-commitmsg": "./bin/commitmsg",
     "hmpo-checkengines": "./bin/checkengines"
   },
