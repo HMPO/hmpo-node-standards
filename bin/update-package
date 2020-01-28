@@ -18,6 +18,18 @@ const scripts = [
     script: 'true'
   },
   { name: 'posttest',
+    deps: ['nyc'],
+    script: 'npm run test:coverage'
+  },
+  { name: 'test:unit',
+    deps: ['nyc', 'mocha'],
+    script: 'nyc --reporter=lcov --reporter=text-summary mocha ./test/unit --recursive --require ./test/unit/helper'
+  },
+  { name: 'test:coverage',
+    deps: ['nyc'],
+    script: "nyc check-coverage"
+  },
+  { name: 'posttest',
     deps: ['istanbul'],
     script: 'npm run test:coverage'
   },
