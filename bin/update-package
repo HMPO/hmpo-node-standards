@@ -23,11 +23,7 @@ const scripts = [
   },
   { name: 'test:unit',
     deps: ['nyc', 'mocha'],
-    script: 'nyc --reporter=lcov --reporter=text-summary mocha ./test/unit --recursive --require ./test/unit/helper'
-  },
-  { name: 'test:coverage',
-    deps: ['nyc'],
-    script: "nyc check-coverage"
+    script: 'nyc mocha ./test/unit --recursive --require ./test/unit/helper'
   },
   { name: 'posttest',
     deps: ['istanbul'],
@@ -101,6 +97,29 @@ const update = (dst, src) => {
 
 update('scripts', scripts);
 update('husky.hooks', hooks);
+
+if (pkg.devDependencies && pkg.devDependencies.nyc && !pkg.nyc) {
+  changed = true;
+  pkg.nyc = {
+    "all": true,
+    "exclude": [
+      "assets/**",
+      "coverage/**",
+      "public/**",
+      "test/**"
+    ],
+    "check-coverage": true,
+    "skip-full": true,
+    "reporter": [
+      "html",
+      "text"
+    ],
+    "lines": 100,
+    "branches": 100,
+    "functions": 100,
+    "statements": 100
+  }
+}
 
 if (changed) {
   const pkgStr = JSON.stringify(pkg, null, 2) + '\n';
