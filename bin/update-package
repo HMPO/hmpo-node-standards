@@ -111,8 +111,8 @@ if (pkg.devDependencies && pkg.devDependencies.nyc && !pkg.nyc) {
     "check-coverage": true,
     "skip-full": true,
     "reporter": [
-      "text",
       "text-summary",
+      "text",
       "html"
     ],
     "lines": 100,
