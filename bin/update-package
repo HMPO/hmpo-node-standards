@@ -116,10 +116,10 @@ if (pkg.devDependencies && pkg.devDependencies.nyc && !pkg.nyc) {
       "text",
       "lcov"
     ],
-    "lines": 100,
+    "statements": 100,
     "branches": 100,
     "functions": 100,
-    "statements": 100
+    "lines": 100
   }
 }
 
