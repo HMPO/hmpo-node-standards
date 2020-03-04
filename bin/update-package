@@ -53,6 +53,7 @@ const scripts = [
 const hooks = [
   { name: 'commit-msg',
     force: true,
+    allow: /^hmpo-commitmsg .*$/,
     script: 'hmpo-commitmsg'
   },
   { name: 'pre-push',
