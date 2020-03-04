@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-FORMAT='^([A-Z]{3,10}-[0-9]+|CHORE:|NOJIRA:|WIP:) '
+TAGS="${1:-[A-Z]{3,10\}}"
+FORMAT='^('"$TAGS"'-[0-9]+|CHORE:|NOJIRA:|WIP:) '
 
 head -n 1 "${HUSKY_GIT_PARAMS:-$GIT_PARAMS}" | grep -E "$FORMAT" || {
 	echo 'ERROR: Missing JIRA issue ID!'
 	echo 'Allowed message formats:'
-	echo ' JIRA-1234 Commit message'
+	echo " $TAGS-1234 Commit message"
 	echo ' CHORE: Commit message'
 	echo ' NOJIRA: Commit message'
 	echo ' WIP: Commit message'
