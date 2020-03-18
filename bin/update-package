@@ -19,7 +19,7 @@ const scripts = [
   },
   { name: 'posttest',
     deps: ['nyc'],
-    script: 'npm audit'
+    script: 'npm audit --production'
   },
   { name: 'test:unit',
     deps: ['nyc', 'mocha'],
