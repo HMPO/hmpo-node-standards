@@ -1,6 +1,6 @@
 {
   "name": "hmpo-node-standards",
-  "version": "1.11.4",
+  "version": "1.11.5",
   "description": "Cross-project node standards at HMPO",
   "scripts": {
     "preinstall": "./bin/install",
