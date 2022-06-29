@@ -4,7 +4,6 @@
 
 const scripts = [
   { name: 'start',
-    force: true,
     script: 'node app.js'
   },
   { name: 'pretest',
@@ -52,7 +51,6 @@ const scripts = [
 
 const hooks = [
   { name: 'commit-msg',
-    force: true,
     allow: /^hmpo-commitmsg .*$/,
     script: 'hmpo-commitmsg'
   },
