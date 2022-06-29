@@ -4,7 +4,8 @@
   "description": "Cross-project node standards at HMPO",
   "main": "index.js",
   "scripts": {
-    "preinstall": "./bin/install"
+    "preinstall": "./bin/install",
+    "test": "true"
   },
   "bin": {
     "hmpo-lintapostrophes": "./bin/lintapostrophes",
