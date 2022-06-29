@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Installing hmpo-node-standards" >&2
+
 function copyfiles {
   local src
   local dest
@@ -17,7 +19,7 @@ DEST="${THIS%%/node_modules/*}"
 
 test "$DEST" == "$THIS" && echo "Local $THIS" >&2 && exit
 
-echo "Installing hmpo-node-standards from $THIS to $DEST" >&2
+echo "From $THIS to $DEST" >&2
 
 echo "Copying files" >&2
 copyfiles "$THIS/files" "$DEST"
