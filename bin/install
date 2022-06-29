@@ -15,19 +15,19 @@ function copyfiles {
 THIS="$(/usr/bin/env node -e 'process.stdout.write(require("path").resolve(process.argv[1], "..", ".."))' "$0")"
 DEST="${THIS%%/node_modules/*}"
 
-test "$DEST" == "$THIS" && echo "Local $THIS" && exit
+test "$DEST" == "$THIS" && echo "Local $THIS" >&2 && exit
 
-echo "Installing hmpo-node-standards from $THIS to $DEST"
+echo "Installing hmpo-node-standards from $THIS to $DEST" >&2
 
-echo "Copying files"
+echo "Copying files" >&2
 copyfiles "$THIS/files" "$DEST"
 
-echo "Copying test files"
+echo "Copying test files" >&2
 mkdir -p "$DEST/test"
 copyfiles "$THIS/files/test" "$DEST/test"
 
-echo "Updating package"
+echo "Updating package" >&2
 ./bin/update-package "$DEST/package.json"
 
-echo "Checking engines"
+echo "Checking engines" >&2
 ./bin/checkengines "$DEST/package.json" || exit 1
