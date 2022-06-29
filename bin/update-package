@@ -122,6 +122,15 @@ if (pkg.devDependencies && pkg.devDependencies.nyc && !pkg.nyc) {
   }
 }
 
+if (!pkg.engines) {
+  pkg.engines = {};
+}
+if (!pkg.engines.node) {
+  changed = true;
+  pkg.node = '>=16';
+  pkg.npm = '>=8';
+}
+
 if (changed) {
   const pkgStr = JSON.stringify(pkg, null, 2) + '\n';
   fs.writeFileSync(filename, pkgStr, 'utf8');

@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -x
 
 function copyfiles {
   local src
@@ -13,16 +12,22 @@ function copyfiles {
   done
 }
 
-#THIS="$(readlink -f "$(dirname "$0")/..")"
-THIS="$(node -e 'process.stdout.write(require("path").resolve(process.argv[1], "..", ".."))' "$0")"
+THIS="$(/usr/bin/env node -e 'process.stdout.write(require("path").resolve(process.argv[1], "..", ".."))' "$0")"
 DEST="${THIS%%/node_modules/*}"
 
-test "$DEST" == "$THIS" && echo Local && exit
+test "$DEST" == "$THIS" && echo "Local $THIS" && exit
 
-./bin/checkengines "$DEST/package.json" || exit 1
+echo "Installing hmpo-node-standards from $THIS to $DEST"
 
+echo "Copying files"
 copyfiles "$THIS/files" "$DEST"
+
+echo "Copying test files"
 mkdir -p "$DEST/test"
 copyfiles "$THIS/files/test" "$DEST/test"
 
+echo "Updating package"
 ./bin/update-package "$DEST/package.json"
+
+echo "Checking engines"
+./bin/checkengines "$DEST/package.json" || exit 1
