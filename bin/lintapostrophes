@@ -12,7 +12,7 @@ if test -z "$CHECKED"; then
 	exit 0
 fi
 
-if grep "'" -r $CHECKED | ( ( test -n "$ALLOWED" && grep -v $ALLOWED ) || grep . ); then
+if grep "'" -r $CHECKED | grep -v "[:-] '[^']*'$" | ( ( test -n "$ALLOWED" && grep -v $ALLOWED ) || grep . ); then
 	echo 'ERROR: Incorrect apostrophes!'
 	exit 1
 fi
