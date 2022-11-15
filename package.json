@@ -27,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/UKHomeOffice/passports-node-standards/issues"
   },
-  "homepage": "https://github.com/UKHomeOffice/passports-node-standards#readme"
+  "homepage": "https://github.com/UKHomeOffice/passports-node-standards#readme",
+  "devDependencies": {
+    "hmpo-i18n": "^5.0.2"
+  }
 }

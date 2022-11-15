@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-
-j={2:'',3:'EN=locales/en/default.json',4:'CY=locales/cy/default.json'},
+j={2:'',3:'en,cy',4:'{"baseDir":"."}'},
 d=[],
 t=s=>typeof s,
 f=(a,b,r)=>{
@@ -16,14 +15,21 @@ r=require,
 v=r('path').resolve,
 g=a=>process.argv[a]||j[a],
 l=a=>r(v(process.cwd(),g(a).substr(3))),
-n=a=>g(a).substr(0,2),
-e=l(3),
-c=l(4),
-f(c,e,n(3)),
-f(e,c,n(4)),
-i=g(2).length&&new RegExp(g(2)),
-m=i?d.filter(p=>!i.test(p)):d,
-m.length&&(
-    console.error('Locales missing keys:\n '+m.join('\n ')),
-    process.exit(1)
-)
+u=a=>g(3).split(',')[a],
+r('hmpo-i18n').backends.fs.load(JSON.parse(g(4)),(e,c)=> {
+    e&&(
+        console.error('Locales loading error:\n '+e),
+        process.exit(1)
+    ),
+    n0=u(0),
+    n1=u(1),
+    f(c[n1],c[n0],n0),
+    f(c[n0],c[n1],n1),
+    i=g(2).length&&new RegExp(g(2)),
+    m=i?d.filter(p=>!i.test(p)):d,
+    m.length&&(
+        console.error('Locales missing keys:\n '+m.join('\n ')),
+        process.exit(1)
+    ),
+    process.exit(0)
+})
