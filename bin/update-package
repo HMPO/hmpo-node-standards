@@ -49,18 +49,6 @@ const scripts = [
   }
 ];
 
-const hooks = [
-  { name: 'commit-msg',
-    allow: /^hmpo-commitmsg .*$/,
-    script: 'hmpo-commitmsg'
-  },
-  { name: 'pre-push',
-    force: true,
-    allow: /^hmpo-checkgit .* && npm test$/,
-    script: 'hmpo-checkgit && npm test'
-  }
-];
-
 const fs = require('fs');
 
 const filename = process.argv[2];
@@ -95,7 +83,6 @@ const update = (dst, src) => {
 };
 
 update('scripts', scripts);
-update('husky.hooks', hooks);
 
 if (pkg.devDependencies && pkg.devDependencies.nyc && !pkg.nyc) {
   changed = true;
